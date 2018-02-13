@@ -34,6 +34,44 @@ public class Assignment2 {
 	
 	public static ArrayList<Flight> All_Flights = new ArrayList<Flight>();
 	
+	public void Reserve(Flight F, Passenger P)
+	{
+		F.my_passengers.add(P);
+		P.my_flights.add(F);
+	}
+	
+	public void Cancel(Flight F, Passenger P)
+	{
+		F.my_passengers.remove(P);
+		P.my_flights.remove(F);
+	}
+	
+	public void My_Flights(Passenger P)
+	{
+		for(int i = 0;i<P.my_flights.size();i++)
+		{
+			System.out.println("Flight Number : "+P.my_flights.get(i).flight_number);
+		}
+	}
+	
+	public void Transfer (Flight F1, Flight F2, Passenger P)
+	{
+		F1.my_passengers.remove(P);
+		F2.my_passengers.add(P);
+		P.my_flights.remove(F1);
+		P.my_flights.add(F2);
+	}
+	
+	public void Total_Reservations()
+	{
+		int total = 0;
+		for(int i = 0;i<All_Flights.size();i++)
+		{
+			total = total+All_Flights.get(i).my_passengers.size();
+		}
+		System.out.println("Total Number of Reservations : " +  total);
+	}
+	
 	public static void main(String[] args)throws IOException
 	{
 		
