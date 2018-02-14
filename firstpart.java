@@ -414,7 +414,7 @@ public class firstpart {
         allPassengers.add(P4);
         allPassengers.add(P5);
 
-        ExecutorService tpool = Executors.newFixedThreadPool(20 );
+        ExecutorService tpool = Executors.newFixedThreadPool(40 );
         long startTime = System.currentTimeMillis();
         while(System.currentTimeMillis() < startTime + 10000) {
 //        int i = 10;
