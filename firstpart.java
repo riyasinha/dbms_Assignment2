@@ -1,7 +1,11 @@
+package Assignment2;
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 class Passenger
 {
@@ -57,7 +61,7 @@ class Passenger
     }
 
     public void myFlights(int pid) {
-        for(Passenger p: Main.allPassengers) {
+        for(Passenger p: firstpart.allPassengers) {
             if(p.id == pid) {
                 for (Flight f : my_flights) {
                     System.out.println(f);
@@ -131,7 +135,7 @@ class Flight
     }
 
     public void reserve(Flight f, int pid) {
-        for (Passenger p : Main.allPassengers) {
+        for (Passenger p : firstpart.allPassengers) {
             if(p.getId() == pid) {
                 if(vacantSeats != 0) {
                     vacantSeats--;
@@ -158,7 +162,7 @@ class Flight
 
     public int totalReservation() {
         int no = 0;
-        for(Flight f : Main.All_Flights) {
+        for(Flight f : firstpart.All_Flights) {
             no += f.my_passengers.size();
         }
         return no;
@@ -194,35 +198,35 @@ class transaction implements Runnable{
         switch(choice) {
             case 1: {
                     System.out.println("reserve");
-                    int flightNo = r.nextInt(Main.All_Flights.size());
-                    int passNo = r.nextInt(Main.allPassengers.size());
+                    int flightNo = r.nextInt(firstpart.All_Flights.size());
+                    int passNo = r.nextInt(firstpart.allPassengers.size());
 
                     final Lock lock1 = new ReentrantLock();
 
                     final Lock lock1_P = new ReentrantLock();
 
-                    for(int i = 0;i<All_Flights.size();i++)
+                    for(int i = 0;i<firstpart.All_Flights.size();i++)
                     {
                         lock1.lock();
 
                     }
 
-                    for(int i = 0;i<allPassengers.size();i++)
+                    for(int i = 0;i<firstpart.allPassengers.size();i++)
                     {
                         lock1_P.lock();
                     }
 
 
-                    Flight f = Main.All_Flights.get(flightNo);
+                    Flight f = firstpart.All_Flights.get(flightNo);
                     f.reserve(f, passNo);
 
-                    for(int i = 0;i<All_Flights.size();i++)
+                    for(int i = 0;i<firstpart.All_Flights.size();i++)
                     {
                         lock1.unlock();
 
                     }
 
-                    for(int i = 0;i<allPassengers.size();i++)
+                    for(int i = 0;i<firstpart.allPassengers.size();i++)
                     {
                         lock1_P.unlock();
                     }
@@ -231,33 +235,33 @@ class transaction implements Runnable{
                 }
             case 2: {
                 System.out.println("cancel");
-                int flightNo = r.nextInt(Main.All_Flights.size());
-                int passNo = r.nextInt(Main.allPassengers.size());
+                int flightNo = r.nextInt(firstpart.All_Flights.size());
+                int passNo = r.nextInt(firstpart.allPassengers.size());
 
-                final Lock lock2 = new ReentrantLock();
+                Lock lock2 = new ReentrantLock();
 
-                    final Lock lock2_P = new ReentrantLock();
+                Lock lock2_P = new ReentrantLock();
 
-                    for(int i = 0;i<All_Flights.size();i++)
+                    for(int i = 0;i<firstpart.All_Flights.size();i++)
                     {
                         lock2.lock();
 
                     }
 
-                    for(int i = 0;i<allPassengers.size();i++)
+                    for(int i = 0;i<firstpart.allPassengers.size();i++)
                     {
                         lock2_P.lock();
                     }
-                Flight f = Main.All_Flights.get(flightNo);
+                Flight f = firstpart.All_Flights.get(flightNo);
                 f.cancel(f, passNo);
 
-                for(int i = 0;i<All_Flights.size();i++)
+                for(int i = 0;i<firstpart.All_Flights.size();i++)
                     {
                         lock2.unlock();
 
                     }
 
-                    for(int i = 0;i<allPassengers.size();i++)
+                    for(int i = 0;i<firstpart.allPassengers.size();i++)
                     {
                         lock2_P.unlock();
                     }
@@ -265,64 +269,98 @@ class transaction implements Runnable{
             }
             case 3: {
                 System.out.println("my flight");
-                int passNo = r.nextInt(Main.allPassengers.size());
-                Passenger p = Main.allPassengers.get(passNo);
+                int passNo = r.nextInt(firstpart.allPassengers.size());
                 
-                final Lock lock3 = new ReentrantLock();
-
-                    final Lock lock3_P = new ReentrantLock();
-
-                    for(int i = 0;i<All_Flights.size();i++)
-                    {
-                        lock3.lock();
-
-                    }
-
-                    for(int i = 0;i<allPassengers.size();i++)
-                    {
-                        lock3_P.lock();
-                    }
+                
+                Lock lock3 = new ReentrantLock();
+                Lock lock3_P = new ReentrantLock();
+                for(int i = 0;i<firstpart.All_Flights.size();i++)
+                {
+                   lock3.lock();
+                }
+                for(int i = 0;i<firstpart.allPassengers.size();i++)
+                {
+                   lock3_P.lock();
+                }
+                    
+                Passenger p = firstpart.allPassengers.get(passNo);
                 p.myFlights(passNo);
 
-                for(int i = 0;i<All_Flights.size();i++)
-                    {
-                        lock3.unlock();
-
-                    }
-
-                    for(int i = 0;i<allPassengers.size();i++)
-                    {
-                        lock3_P.unlock();
-                    }
+                for(int i = 0;i<firstpart.All_Flights.size();i++)
+                {
+                   lock3.unlock();
+                }
+                for(int i = 0;i<firstpart.allPassengers.size();i++)
+                {
+                   lock3_P.unlock();
+                }
                 break;
             }
             case 4:{
                 System.out.println("total reservation");
-                int flightNo = r.nextInt(Main.All_Flights.size());
-                //int passNo = r.nextInt(Main.allPassengers.size() + 1);
-
+                int flightNo = r.nextInt(firstpart.All_Flights.size());
+                //int passNo = r.nextInt(firstpart.allPassengers.size() + 1);
+                Lock lock3 = new ReentrantLock();
+                Lock lock3_P = new ReentrantLock();
+                for(int i = 0;i<firstpart.All_Flights.size();i++)
+                {
+                   lock3.lock();
+                }
+                for(int i = 0;i<firstpart.allPassengers.size();i++)
+                {
+                   lock3_P.lock();
+                }
                 
-                Flight f = Main.All_Flights.get(flightNo);
+                Flight f = firstpart.All_Flights.get(flightNo);
                 f.totalReservation();
+                
+                for(int i = 0;i<firstpart.All_Flights.size();i++)
+                {
+                   lock3.unlock();
+                }
+                for(int i = 0;i<firstpart.allPassengers.size();i++)
+                {
+                   lock3_P.unlock();
+                }                
                 break;
             }
             case 5:{
                 System.out.println("transfer");
-                int flightNo1 = r.nextInt(Main.All_Flights.size());
+                int flightNo1 = r.nextInt(firstpart.All_Flights.size());
                 int flightNo2;
                 do{
-                    flightNo2 = r.nextInt(Main.All_Flights.size());
+                    flightNo2 = r.nextInt(firstpart.All_Flights.size());
                 }while(flightNo1 != flightNo2);
-                int passNo = r.nextInt(Main.allPassengers.size());
-                Flight f1 = Main.All_Flights.get(flightNo1);
-                Flight f2 = Main.All_Flights.get(flightNo2);
+                int passNo = r.nextInt(firstpart.allPassengers.size());
+                Lock lock3 = new ReentrantLock();
+                Lock lock3_P = new ReentrantLock();
+                for(int i = 0;i<firstpart.All_Flights.size();i++)
+                {
+                   lock3.lock();
+                }
+                for(int i = 0;i<firstpart.allPassengers.size();i++)
+                {
+                   lock3_P.lock();
+                }
+                
+                Flight f1 = firstpart.All_Flights.get(flightNo1);
+                Flight f2 = firstpart.All_Flights.get(flightNo2);
                 f1.transfer(f1, f2, passNo);
+                
+                for(int i = 0;i<firstpart.All_Flights.size();i++)
+                {
+                   lock3.unlock();
+                }
+                for(int i = 0;i<firstpart.allPassengers.size();i++)
+                {
+                   lock3_P.unlock();
+                }
                 break;
             }
             default:
                 System.out.println("Wrong choice");
         }
-        Main.count++;
+        firstpart.count++;
         try {
             Thread.sleep(10);
         } catch (InterruptedException e) {
@@ -334,8 +372,8 @@ class transaction implements Runnable{
 
 public class firstpart {
 
-    public static ArrayList<Flight> All_Flights = new ArrayList<Flight>();
-    public static ArrayList<Passenger> allPassengers = new ArrayList<Passenger>();
+    public static  ArrayList<Flight> All_Flights = new ArrayList<Flight>();
+    public static  ArrayList<Passenger> allPassengers = new ArrayList<Passenger>();
     volatile static int count = 0;
 
     public static void main(String args[]) {
@@ -391,6 +429,6 @@ public class firstpart {
         for(Flight f : All_Flights)
             System.out.println(f);
         System.out.println(count);
-        System.out.println(P5.getMy_flights());
+        //System.out.println(P5.getMy_flights());
     }
 }
