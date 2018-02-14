@@ -196,29 +196,112 @@ class transaction implements Runnable{
                     System.out.println("reserve");
                     int flightNo = r.nextInt(Main.All_Flights.size());
                     int passNo = r.nextInt(Main.allPassengers.size());
+
+                    final Lock lock1 = new ReentrantLock();
+
+                    final Lock lock1_P = new ReentrantLock();
+
+                    for(int i = 0;i<All_Flights.size();i++)
+                    {
+                        lock1.lock();
+
+                    }
+
+                    for(int i = 0;i<allPassengers.size();i++)
+                    {
+                        lock1_P.lock();
+                    }
+
+
                     Flight f = Main.All_Flights.get(flightNo);
                     f.reserve(f, passNo);
+
+                    for(int i = 0;i<All_Flights.size();i++)
+                    {
+                        lock1.unlock();
+
+                    }
+
+                    for(int i = 0;i<allPassengers.size();i++)
+                    {
+                        lock1_P.unlock();
+                    }
+
                 break;
                 }
             case 2: {
                 System.out.println("cancel");
                 int flightNo = r.nextInt(Main.All_Flights.size());
                 int passNo = r.nextInt(Main.allPassengers.size());
+
+                final Lock lock2 = new ReentrantLock();
+
+                    final Lock lock2_P = new ReentrantLock();
+
+                    for(int i = 0;i<All_Flights.size();i++)
+                    {
+                        lock2.lock();
+
+                    }
+
+                    for(int i = 0;i<allPassengers.size();i++)
+                    {
+                        lock2_P.lock();
+                    }
                 Flight f = Main.All_Flights.get(flightNo);
                 f.cancel(f, passNo);
+
+                for(int i = 0;i<All_Flights.size();i++)
+                    {
+                        lock2.unlock();
+
+                    }
+
+                    for(int i = 0;i<allPassengers.size();i++)
+                    {
+                        lock2_P.unlock();
+                    }
                 break;
             }
             case 3: {
                 System.out.println("my flight");
                 int passNo = r.nextInt(Main.allPassengers.size());
                 Passenger p = Main.allPassengers.get(passNo);
+                
+                final Lock lock3 = new ReentrantLock();
+
+                    final Lock lock3_P = new ReentrantLock();
+
+                    for(int i = 0;i<All_Flights.size();i++)
+                    {
+                        lock3.lock();
+
+                    }
+
+                    for(int i = 0;i<allPassengers.size();i++)
+                    {
+                        lock3_P.lock();
+                    }
                 p.myFlights(passNo);
+
+                for(int i = 0;i<All_Flights.size();i++)
+                    {
+                        lock3.unlock();
+
+                    }
+
+                    for(int i = 0;i<allPassengers.size();i++)
+                    {
+                        lock3_P.unlock();
+                    }
                 break;
             }
             case 4:{
                 System.out.println("total reservation");
                 int flightNo = r.nextInt(Main.All_Flights.size());
                 //int passNo = r.nextInt(Main.allPassengers.size() + 1);
+
+                
                 Flight f = Main.All_Flights.get(flightNo);
                 f.totalReservation();
                 break;
@@ -245,6 +328,7 @@ class transaction implements Runnable{
         } catch (InterruptedException e) {
 //            e.printStackTrace();
         }
+    
     }
 }
 
